@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block js %}
+{#    <script>#}
+{#        $(document).ready(function () {#}
+{#            var comment = $('#id_add_comment').val()#}
+{#            var post_josn = {}#}
+{#            post_josn[key] = $("#export").attr("value")#}
+{#            $("#export").click(function () {#}
+{#                window.location.href="/check_rich/?export=" + post_josn[key]#}
+{#            })#}
+{#        })#}
+{#    </script>#}
+{% endblock %}
+{% block main %}
+    {% if username in guestlist %}
+        <FONT SIZE="6" COLOR="red" FACE="黑体">当前用户没有大R查询权限</FONT>
+    {% endif %}
+    <br>
+    <form method="POST" action="/add_comment/?player_name={{ player_name }}">
+        <h2>用户订单备注</h2>
+        {% csrf_token %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{{ message.tags }}">
+                    {{ message|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="form-group">
+            <label class="control-label" for="{{ form.add_comment.id_for_label }}">备注</label>
+            {% for error in form.add_commment.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error|safe }}
+                </div>
+            {% endfor %}
+            {{ form.add_comment }}
+        </div>
+        <button class="btn btn-primary btn-lg active" type="submit">提交</button>
+    </form>
+{% endblock main %}

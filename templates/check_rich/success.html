@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block css %}
+    <style>
+        #success {
+            font-size: 35px;
+            color: green;
+        }
+    </style>
+{% endblock css %}
+
+{% block main %}
+
+    <span id="success" class="glyphicon glyphicon-ok"></span>
+    <span>添加成功</span>
+    <br>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+                <a href="/query_comment/?player_name={{ player_name }}" >
+                    <button class="btn btn-primary btn-lg active">查询备注</button>
+                </a>
+                <a href="/add_comment/?player_name={{ player_name }}" >
+                    <button class="btn btn-primary btn-lg active">添加备注</button>
+                </a>
+			</ul>
+		</div>
+
+{% endblock main %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block css %}
+    <style>
+        #error {
+            font-size: 35px;
+            color: red;
+        }
+    </style>
+{% endblock css %}
+
+{% block main %}
+
+    <span id="error" class="glyphicon glyphicon-remove"></span>
+    <span>缓存已失效，请重新查询</span>
+
+{% endblock main %}

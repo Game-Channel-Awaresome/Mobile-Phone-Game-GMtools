@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block main %}
+    {% if username in guestlist %}
+        <FONT SIZE="6" COLOR="red" FACE="黑体">当前用户没有大R查询权限</FONT>
+    {% endif %}
+
+    <form method="POST" action="/query_comment/?player_name={{ player_name }}">
+        {% csrf_token %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{{ message.tags }}">
+                    {{ message|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="form-group">
+            <label class="control-label" for="{{ form.keyword.id_for_label }}">备注内容</label>
+            {% for error in form.appid.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error|safe }}
+                </div>
+            {% endfor %}
+            {{ search_form.keyword }}
+        </div>
+        <button class="btn btn-primary btn-lg active" type="submit">搜索</button>
+    </form>
+    <br>
+    <font SIZE="4" COLOR="black" FACE="黑体">{{ player_name  }} 的备注数量：{{ comment_num }}</font>
+    <br>
+    <br>
+    <TABLE class="table table-bordered">
+        <tr>
+            <th nowrap>&nbsp;备注内容&nbsp;</th>
+            <th nowrap>&nbsp;备注时间&nbsp;</th>
+            <th nowrap>&nbsp;备注人&nbsp;</th>
+        </tr>
+        {% for item in comment_result %}
+            <tr>
+                <td nowrap>{{ item.comment_content }}</td>
+                <td nowrap>{{ item.comment_time }}</td>
+                <td nowrap>{{ item.user }}</td>
+            </tr>
+        {% endfor %}
+    </TABLE>
+    <a href="/add_comment/?player_name={{ player_name }}" target="_blank">
+        <button class="btn btn-primary btn-lg active">添加备注</button>
+    </a>
+{% endblock main %}

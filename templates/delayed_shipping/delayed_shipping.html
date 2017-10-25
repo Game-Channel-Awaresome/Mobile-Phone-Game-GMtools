@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+{% if username in guestlist %}
+	<FONT SIZE="6" COLOR="red" FACE="黑体">当前用户没有补单权限</FONT>
+{% endif %}
+
+	<form method="POST">
+		<h2>补单工具</h2>
+		PS:输入U8状态为1的订单号,会修改状态为3并发货</br>
+		{% csrf_token %}
+
+		{% if messages %}
+			{% for message in messages %}
+				<div class="{{ message.tags }}">
+					{{ message|safe }}
+				</div>
+			{% endfor %}		
+		{% endif %}
+		</br>
+		<div class="form-group">
+			<label class="control-label" for="{{ form.appid.id_for_label }}">请选择APP</label></br>
+			{% for error in form.appid.errors %}
+				<div class="alert alert-danger" role="alert">
+					{{ error|safe }}
+				</div>
+			{% endfor %}
+			<div>
+			{{ form.appid }}
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label" for="{{ form.orderid.id_for_label }}">订单号(U8)</label>
+			{% for error in form.orderid.errors %}
+				<div class="alert alert-danger" role="alert">
+					{{ error|safe }}
+				</div>
+			{% endfor %}
+			{{ form.orderid }}
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label" for="{{ form.productid.id_for_label }}">商品ID</label>
+			{% for error in form.productid.errors %}
+				<div class="alert alert-danger" role="alert">
+					{{ error|safe }}
+				</div>
+			{% endfor %}
+			{{ form.productid }}
+		</div>
+		
+		<div class="form-group">
+			<label for="{{ form.price.id_for_label }}">订单金额（以元为单位）</label>
+			{% for error in form.price.errors %}
+				<div class="label label-danger" role="alert">
+					{{ error|safe }}
+				</div>
+			{% endfor %}
+			{{ form.price }}
+		</div>
+		
+		<div class="form-group">
+			<img onclick="this.setAttribute('src','/accounts/captcha?nocache='+Math.random());" src="/accounts/captcha" alt="Captcha"/>	
+		</div>
+		
+		<div class="form-group">
+			{% for error in form.captcha.errors %}
+				<div class="label label-danger" role="alert">
+					{{ error|safe }}
+				</div>
+			{% endfor %}
+			{{ form.captcha }}
+		</div>
+		<button class="btn btn-primary btn-lg active" type="submit">提交</button>
+		</br></br></br></br>
+	</form>
+{% endblock main %}

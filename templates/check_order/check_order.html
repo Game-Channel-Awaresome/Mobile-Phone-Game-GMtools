@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<form method="POST">
+		<h2>订单&用户查询</h2>
+		PS:用户ID查询只需填写用户ID，订单号查询只需填写订单号</br></br>
+		{% csrf_token %}
+
+		{% if messages %}
+			{% for message in messages %}
+				<div class="{{ message.tags }}">
+					{{ message|safe }}
+				</div>
+			{% endfor %}		
+		{% endif %}
+
+		<div class="form-group">
+			<label class="control-label" for="{{ form.userid.id_for_label }}">用户ID</label>
+			{% for error in form.userid.errors %}
+				<div class="alert alert-danger" role="alert">
+					{{ error|safe }}
+				</div>
+			{% endfor %}
+			{{ form.userid }}
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label" for="{{ form.orderid.id_for_label }}">订单号(U8)</label>
+			{% for error in form.orderid.errors %}
+				<div class="alert alert-danger" role="alert">
+					{{ error|safe }}
+				</div>
+			{% endfor %}
+			{{ form.orderid }}
+		</div>
+		
+		<button class="btn btn-primary btn-lg active" type="submit" name="byuserid">通过用户ID查询</button>
+		<button class="btn btn-primary btn-lg active" type="submit" name="byorderid">通过订单号查询</button>
+		<!-- <TABLE style="BORDER-RIGHT: 8px groove; BORDER-BOTTOM: 8px groove" height=100 cellSpacing=5 cellPadding=2 width=500 border=7 rules=all> -->
+		</br></br></br>登录名与手机号：</br>
+		<TABLE class="table table-bordered">
+			<tr>
+				<th>&nbsp;渠道用户ID&nbsp;</th>
+				<th>&nbsp;登录名&nbsp;</th>
+				<th>&nbsp;绑定手机号&nbsp;</th>
+			</tr>
+				<tr>
+				<td>{{ sdkuser.id }}</td>
+				<td>{{ sdkuser.username }}</td>
+				<td>{{ sdkuser.phone }}</td>
+				</tr>
+		</TABLE>
+		
+				</br>U8服务器上的订单信息：</br>
+		<TABLE class="table table-bordered">
+			<tr>
+				<th nowrap>&nbsp;订单号&nbsp;</th>
+				<th nowrap>&nbsp;订单金额(分)&nbsp;</th>
+				<th nowrap>&nbsp;实际支付(分)&nbsp;</th>
+				<th nowrap>&nbsp;订单状态&nbsp;</th>
+				<th nowrap>&nbsp;创建时间&nbsp;</th>
+				<th nowrap>&nbsp;完成时间&nbsp;</th>
+				<th nowrap>&nbsp;用户ID&nbsp;</th>
+				<th nowrap>&nbsp;角色ID&nbsp;</th>
+				<th nowrap>&nbsp;角色名称&nbsp;</th>
+				<th nowrap>&nbsp;服务器名称&nbsp;</th>
+				<th nowrap>&nbsp;商品ID&nbsp;</th>
+				<th nowrap>&nbsp;商品名称&nbsp;</th>
+				<th nowrap>&nbsp;商品描述&nbsp;</th>
+			</tr>
+				{% for u8result in u8result %}
+				<tr>
+				<td nowrap>{{ u8result.orderID }}</td>
+				<td nowrap>{{ u8result.money }}</td>
+				<td nowrap>{{ u8result.realMoney }}</td>
+				<td nowrap>{{ u8result.state }}</td>
+				<td nowrap>{{ u8result.createdTime }}</td>
+				<td nowrap>{{ u8result.completeTime }}</td>
+				<td nowrap>{{ u8result.username }}</td>
+				<td nowrap>{{ u8result.roleID }}</td>
+				<td nowrap>{{ u8result.roleName }}</td>
+				<td nowrap>{{ u8result.serverName }}</td>
+				<td nowrap>{{ u8result.productID }}</td>
+				<td nowrap>{{ u8result.productName }}</td>
+				<td nowrap>{{ u8result.productDesc }}</td>
+				</tr>
+				{% endfor %}
+		</TABLE>
+				</br>SDK服务器上的订单信息:</br>
+		<TABLE class="table table-bordered">
+			<tr>
+				<th nowrap>&nbsp;订单号&nbsp;</th>
+				<th nowrap>&nbsp;订单金额(分)&nbsp;</th>
+				<th nowrap>&nbsp;实际支付(分)&nbsp;</th>
+				<th nowrap>&nbsp;订单状态&nbsp;</th>
+				<th nowrap>&nbsp;创建时间(0时区时间)&nbsp;</th>
+				<th nowrap>&nbsp;更新时间(0时区时间)&nbsp;</th>
+				<th nowrap>&nbsp;订单编号&nbsp;</th>
+				<th nowrap>&nbsp;支付渠道&nbsp;</th>
+				<th nowrap>&nbsp;商品名称&nbsp;</th>
+				<th nowrap>&nbsp;AppID&nbsp;</th>
+				<th nowrap>&nbsp;币种&nbsp;</th>
+				<th nowrap>&nbsp;渠道用户ID&nbsp;</th>
+			</tr>
+				{% for sdkresult in sdkresult %}
+				<tr>
+				<td nowrap>{{ sdkresult.game_order_id }}</td>
+				<td nowrap>{{ sdkresult.amount }}</td>
+				<td nowrap>{{ sdkresult.real_amount }}</td>
+				<td nowrap>{{ sdkresult.order_status }}</td>
+				<td nowrap>{{ sdkresult.created_at }}</td>
+				<td nowrap>{{ sdkresult.updated_at }}</td>
+				<td nowrap>{{ sdkresult.id }}</td>
+				<td nowrap>{{ sdkresult.pay_channel }}</td>
+				<td nowrap>{{ sdkresult.good_name }}</td>
+				<td nowrap>{{ sdkresult.app_id }}</td>
+				<td nowrap>{{ sdkresult.currency }}</td>
+				<td nowrap>{{ sdkresult.user_id }}</td>
+				</tr>
+				{% endfor %}
+		</TABLE>
+			</br></br>
+	</form>
+{% endblock main %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            var key = $("#export").attr("name")
+            var post_josn = {}
+            post_josn[key] = $("#export").attr("value")
+            $("#export").click(function () {
+                window.location.href="/check_rich/?export=" + post_josn[key]
+            })
+        })
+    </script>
+{% endblock %}
+{% block main %}
+    {% if username in guestlist %}
+        <FONT SIZE="6" COLOR="red" FACE="黑体">当前用户没有大R查询权限</FONT>
+    {% endif %}
+
+    <form method="POST">
+        <h2>大R查询</h2>
+        PS:本查询会列出所有充值总金额大于等于输入金额的用户的信息</br>
+        <FONT SIZE="3" COLOR="red" FACE="黑体">数据库查询较慢,请耐心等待</FONT></br></br>
+        {% csrf_token %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{{ message.tags }}">
+                    {{ message|safe }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="form-group">
+            <label class="control-label" for="{{ form.appid.id_for_label }}">APP ID</label>
+            {% for error in form.appid.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error|safe }}
+                </div>
+            {% endfor %}
+            {{ form.appid }}
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="{{ form.price.id_for_label }}">查询金额(元)</label>
+            {% for error in form.price.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error|safe }}
+                </div>
+            {% endfor %}
+            {{ form.price }}
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="{{ form.starttime.id_for_label }}">查询时间</label>
+            </br>PS:可以不指定时间,也可以只指定起始或截止时间</br></br>
+            {% for error in form.starttime.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error|safe }}
+                </div>
+            {% endfor %}
+            {{ form.starttime }}
+            </br>
+            {{ form.endtime }}
+        </div>
+
+        <div class="form-group">
+            <img onclick="this.setAttribute('src','/accounts/captcha?nocache='+Math.random());" src="/accounts/captcha"
+                 alt="Captcha"/>
+        </div>
+
+        <div class="form-group">
+            {% for error in form.captcha.errors %}
+                <div class="label label-danger" role="alert">
+                    {{ error|safe }}
+                </div>
+            {% endfor %}
+            {{ form.captcha }}
+        </div>
+        <button class="btn btn-primary btn-lg active" type="submit">提交</button>
+        </br></br>
+        <p SIZE="4" COLOR="black" FACE="黑体">大R数量：{{ rich_num }}</p>
+        <button id="export" class="btn btn-primary btn-lg active" type="button" name="export" value={{ redis_key }}>导出
+        </button>
+        </br></br>
+        <TABLE class="table table-bordered">
+            <tr>
+                <th nowrap>&nbsp;用户ID&nbsp;</th>
+                <th nowrap>&nbsp;用户渠道ID&nbsp;</th>
+                <th nowrap>&nbsp;总支付金额(元)&nbsp;</th>
+                <th nowrap>&nbsp;最近登录时间&nbsp;</th>
+                <th nowrap>&nbsp;登录名&nbsp;</th>
+                <th nowrap>&nbsp;手机号&nbsp;</th>
+                <th nowrap>&nbsp;角色&服务器&角色充值金额&nbsp;</th>
+                <th nowrap>&nbsp;查询备注&nbsp;</th>
+                <th nowrap>&nbsp;添加备注&nbsp;</th>
+            </tr>
+            {% for username,value in result.items %}
+                <tr>
+                    <td nowrap>{{ username }}</td>
+                    <td nowrap>{{ value.channelUserID }}</td>
+                    <td nowrap>{{ value.price }}</td>
+                    <td nowrap>{{ value.lastlogin }}</td>
+                    <td nowrap>{{ value.signname }}</td>
+                    <td nowrap>{{ value.phone }}</td>
+                    <td nowrap>
+                        <TABLE class="table table-bordered">
+                            <th nowrap>&nbsp;角色ID&nbsp;</th>
+                            <th nowrap>&nbsp;角色名&nbsp;</th>
+                            <th nowrap>&nbsp;服务器ID&nbsp;</th>
+                            <th nowrap>&nbsp;服务器名&nbsp;</th>
+                            <th nowrap>&nbsp;充值金额(元)&nbsp;</th>
+                            {% for roleandserver in value.roleandserver %}
+                                <tr>
+                                    <td nowrap>{{ roleandserver.0 }}</td>
+                                    <td nowrap>{{ roleandserver.1 }}</td>
+                                    <td nowrap>{{ roleandserver.2 }}</td>
+                                    <td nowrap>{{ roleandserver.3 }}</td>
+                                    <td nowrap>{{ roleandserver.4 }}</td>
+                                <tr>
+                            {% endfor %}
+                        </TABLE>
+                    </td>
+                    <td nowrap ><a href="/query_comment/?player_name={{ username}}" target="_blank">查询备注</a></td>
+                    <td nowrap ><a href="/add_comment/?player_name={{ username }}" target="_blank">添加备注</a></td>
+                </tr>
+            {% endfor %}
+        </TABLE>
+    </form>
+{% endblock main %}

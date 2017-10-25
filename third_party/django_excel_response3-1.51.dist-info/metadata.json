@@ -1,0 +1,1 @@
+{"extensions": {"python.details": {"document_names": {"description": "DESCRIPTION.rst"}}}, "generator": "bdist_wheel (0.29.0)", "metadata_version": "2.0", "name": "django-excel-response3", "summary": "A subclass of HttpResponse which will transform a QuerySet,", "version": "1.51"}
